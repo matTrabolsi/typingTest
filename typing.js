@@ -1,4 +1,4 @@
-const words = "include iostream using namespace std int main longlong flag cin while if if flag cout return".split(' ');
+const words = "#include iostream using namespace std; int main() longlong n,b,d,a,c flag=0; cin>>n>>b>>d; while(n--) if(a<=b) c+=a; if(c>d) c=0; flag+=1; cout<<flag; return".split(' ');
 const wordscount = words.length;
 const gameTime = 30 *1000;
 window.timer = null;
@@ -29,29 +29,7 @@ function newGame(){
     }
     addClass(document.querySelector('.word'),'current');
     addClass(document.querySelector('.letter'), 'current');
-    document.getElementById('info').innerHTML = (gameTime / 1000)+'';
     window.timer = null;
-}
-
-function getWpm(){
-    const words = [...document.querySelectorAll('.word')];
-    const lastTypedWord = document.querySelector('.word.current');
-    const lastTypedWordIndex = words.indexOf(lastTypedWord);
-    const typedWords = words.slice(0,lastTypedWordIndex);
-    const correctWords = typedWords.filter( word=>{
-        const letters = [...word.children];
-        const incorrectLetters = letters.filter(letter => letter.className.includes('incorrect'));
-        const correctLetters = letters.filter(letter => letter.className.includes('correct'));
-        return incorrectLetters.length === 0 && correctLetters.length === letters.length;
-    });
-    return correctWords.length / gameTime * 60000;
-}
-
-function gmaeOver(){
-    clearInterval(window.timer);
-    addClass(document.getElementById('game'), 'over');
-    const result=getWpm();
-    document.getElementById('info').innerHTML = `WPM ${result}`;
 }
 
 document.getElementById('game').addEventListener('keyup', ev=>{
@@ -64,10 +42,6 @@ document.getElementById('game').addEventListener('keyup', ev=>{
     const isBackSpace = key === 'Backspace';
     const isFirstLetter = currentLetter===currentWord.firstChild;
 
-    if(document.querySelector('#gmae.over')){
-        return;
-    }
-
     console.log({key,expected});
 
     if(!window.timer && isLetter){
@@ -77,17 +51,9 @@ document.getElementById('game').addEventListener('keyup', ev=>{
             }
             const currentTime = (new Date()).getTime();
             const msPassed = currentTime - window.gameStart;
-            const sPassed = Math.round(msPassed/1000);
-            const sLeft = (gameTime / 1000) - sPassed;
-            if(sLeft <= 0){
-                gmaeOver();
-                return;
-            }
-            document.getElementById('info').innerHTML = sLeft+'';
+            document.getElementById('info').innerHTML = msPassed='';
         },1000);
     }
-
-
     
     
     if(isLetter){
@@ -155,13 +121,6 @@ document.getElementById('game').addEventListener('keyup', ev=>{
     cursor.style.top = (nextLetter || nextWord).getBoundingClientRect().top+ 2 + "px";
     cursor.style.left = (nextLetter || nextWord).getBoundingClientRect()[nextLetter?'left':'right']+ "px";
 });
-
-
-document.getElementById('newGame').addEventListener('click',()=>{
-    gmaeOver();
-    newGame();
-});
-
 
 
 newGame();
